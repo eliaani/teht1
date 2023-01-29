@@ -1,31 +1,40 @@
 import React from 'react';
-import {SafeAreaView, View, StyleSheet, Text, TextInput} from 'react-native';
+import {SafeAreaView, View, StyleSheet, Text, TextInput, FlatList} from 'react-native';
 import { Button } from 'react-native';
 
 const App = () => {
-  const [number, onChangeNumber] = React.useState(0);
-  const [number2, onChangeNumber2] = React.useState(0);
-  const [total, onChangeTotal] = React.useState(0);
+  const [number, setNumber] = React.useState(0);
+  const [number2, setNumber2] = React.useState(0);
+  const [total, setTotal] = React.useState(0);
+  const [history, setHistory] = React.useState([]);
 
   const buttonPressed = () => {
-    onChangeTotal(Number(number)+Number(number2));
+    setTotal(Number(number)+Number(number2));
+    const title = (number + " + " + number2 + " = " + (Number(number)+Number(number2)))
+    const temp = {id: title, title}
+    setHistory([...history, temp])
   }
   const buttonPressed2 = () => {
-    onChangeTotal(Number(number)-Number(number2));
+    setTotal(Number(number)-Number(number2));
+    const title = (number + " - " + number2 + " = " + (Number(number)-Number(number2)))
+    const temp = {id: title, title}
+    setHistory([...history, temp])
   }
+  console.log(history)
   return (
     <SafeAreaView style={styles.container}>
       <Text>Result: {total}</Text>
+      
       <TextInput
         style={styles.input}
-        onChangeText={onChangeNumber}
+        onChangeText={setNumber}
         value={number}
         placeholder="number1"
         keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
-        onChangeText={onChangeNumber2}
+        onChangeText={setNumber2}
         value={number2}
         placeholder="number2"
         keyboardType="numeric"
@@ -38,6 +47,14 @@ const App = () => {
           <Button onPress={buttonPressed2} title="-" />
         </View>
       </View>
+      <Text>History</Text>
+      <FlatList 
+        data={history}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <Text>{item.title}</Text>
+        )}
+        />
     </SafeAreaView>
 
   );
